@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
+import 'package:fridge_app/services/db-service.dart';
 import 'package:fridge_app/widgets/product-card.dart';
 import 'package:fridge_app/widgets/product-item.dart';
 
@@ -28,10 +29,12 @@ class _ProductListState extends State<ProductList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
         return ProductCardWidget(
-	        product: products[index]
+	        product: products[index],
+          deleteCallback: () => handleProductDelete(products[index]),
 	      );
       },
       shrinkWrap: true,
@@ -39,8 +42,9 @@ class _ProductListState extends State<ProductList> {
   }
 
   handleProductDelete(Product product) {
-    print("handle product deletion");
-    products.remove(product);
+    setState(() {
+      products.remove(product);
+    });
   }
 }
 

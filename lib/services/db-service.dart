@@ -18,6 +18,7 @@ class DbService {
   }  
 
   initDatabase () async {
+    print("init db");
     WidgetsFlutterBinding.ensureInitialized();
     _database = await openDatabase(
       join(await getDatabasesPath(), _db_name),
