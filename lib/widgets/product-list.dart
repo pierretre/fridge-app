@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/services/db-service.dart';
 import 'package:fridge_app/widgets/product-card.dart';
-import 'package:fridge_app/widgets/product-item.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key});
@@ -12,39 +11,47 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  List<Product> products = <Product>[
-    Product("1234567", "produit 1", DateTime(2023, 10, 3), 1),
-    Product("1234568", "produit 2", DateTime(2023, 10, 4), 2),
-    Product("1234569", "produit 3", DateTime(2023, 11, 3), 1),
-    Product("1234561", "produit 4", DateTime(2023, 11, 3), 1),
-    Product("1234562", "produit 5", DateTime(2023, 11, 3), 1),
-    Product("1234563", "produit 6", DateTime(2023, 11, 3), 1),
-    Product("1234563", "produit 7", DateTime(2023, 11, 3), 1),
-    Product("1234563", "produit 7", DateTime(2023, 11, 3), 1),
-    Product("1234563", "produit 7", DateTime(2023, 11, 3), 1),
-    Product("1234563", "produit 7", DateTime(2023, 11, 3), 1),
-    Product("1234563", "produit 7", DateTime(2023, 11, 3), 1),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      
-      itemCount: products.length,
-      itemBuilder: (BuildContext context, int index) {
-        return ProductCardWidget(
-	        product: products[index],
-          deleteCallback: () => handleProductDelete(products[index]),
-	      );
-      },
-      shrinkWrap: true,
+    return FutureBuilder(
+      future: DbService().queryAll(), 
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          if (snapshot.data!.isNotEmpty) {
+            List<Product> products = extractProductListFromSnapshot(snapshot.data);
+            return ListView.builder(      
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                return ProductCardWidget(
+                  product: products[index],
+                  deleteCallback: () => handleProductDelete(products[index]),
+                );
+              },
+              shrinkWrap: true,
+            );
+          }
+          else return const Center(child: Text("no data"));
+          
+        }else {
+          print("still got no bitches");
+          return const Center(child: CircularProgressIndicator());
+        }
+      }
     );
+    
   }
 
   handleProductDelete(Product product) {
     setState(() {
-      products.remove(product);
+      DbService().deleteProduct(product.barCode).catchError(() {
+        print("error on deletion");
+      });
     });
+  }
+  
+  List<Product> extractProductListFromSnapshot(List<Map>? data) {
+    // print(data);
+    return data!.map((e) => Product(e['barcode'].toString(), e['name'].toString(), DateTime.parse(e['expiresOn']), e['quantity'])).toList();
   }
 }
 

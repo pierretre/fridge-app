@@ -7,10 +7,11 @@ class Product {
   Product(this.barCode, this.name, this.expiresOn, this.quantity);
 
   Map<String, dynamic> toMap () {
+    print(expiresOn.toIso8601String());
     return {
       'barCode': barCode,
       'name': name,
-      'expiresOn': expiresOn,
+      'expiresOn': expiresOn.toIso8601String(),
       'quantity': quantity,
     };
   }

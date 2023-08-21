@@ -9,19 +9,19 @@ class DbService {
   static const _db_version = 1;
 
   late Database _database;
+
   factory DbService() {
     return _instance;
   }
 
-  DbService._internal() {
-    initDatabase();
-  }  
+  DbService._internal();
 
-  initDatabase () async {
-    print("init db");
+  Future<void> initDatabase () async {
     WidgetsFlutterBinding.ensureInitialized();
+    String path = join(await getDatabasesPath(), _db_name);
+
     _database = await openDatabase(
-      join(await getDatabasesPath(), _db_name),
+      path,
       onCreate: (db, version) {
         return db.execute(
           'CREATE TABLE products(barcode TEXT PRIMARY KEY, name TEXT, expiresOn DATE, quantity INTEGER)',
@@ -31,11 +31,23 @@ class DbService {
     );
   }
 
-  Future<void> insertProduct(Product product) async {
-    await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<int> insertProduct(Product product) async {
+    await initDatabase();
+    return await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<void> deleteProduct(Product product) async {
-    await _database.delete('products', where: 'barcode = ?', whereArgs: [product.barCode]);
+  Future<int> deleteProduct(String barCode) async {
+    await initDatabase();
+    return await _database.delete('products', where: 'barcode = ?', whereArgs: [barCode]);
+  }
+
+  Future<List<Map>> queryAll() async {
+    await initDatabase();
+    return await _database.query('products');
+  }
+
+  Future<int> update(Product product) async {
+    await initDatabase();
+    return await _database.update('products', product.toMap(), where: 'barcode = ?', whereArgs: [product.barCode]);
   }
 }
