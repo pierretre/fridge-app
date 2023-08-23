@@ -24,7 +24,7 @@ class DbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE products(barcode TEXT PRIMARY KEY, name TEXT, expiresOn DATE, quantity INTEGER)',
+          'CREATE TABLE products(name TEXT PRIMARY KEY, barcode TEXT, expiresOn DATE, quantity INTEGER)',
         );
       },
       version: _db_version,
@@ -36,9 +36,9 @@ class DbService {
     return await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<int> deleteProduct(String barCode) async {
+  Future<int> deleteProduct(Product product) async {
     await initDatabase();
-    return await _database.delete('products', where: 'barcode = ?', whereArgs: [barCode]);
+    return await _database.delete('products', where: 'name = ?', whereArgs: [product.name]);
   }
 
   Future<List<Map>> queryAll() async {
@@ -48,6 +48,6 @@ class DbService {
 
   Future<int> update(Product product) async {
     await initDatabase();
-    return await _database.update('products', product.toMap(), where: 'barcode = ?', whereArgs: [product.barCode]);
+    return await _database.update('products', product.toMap(), where: 'name = ?', whereArgs: [product.name]);
   }
 }

@@ -30,10 +30,10 @@ class _ProductListState extends State<ProductList> {
               shrinkWrap: true,
             );
           }
-          else return const Center(child: Text("no data"));
-          
+          else {
+            return const Center(child: Text("no product scanned yet"));
+          }
         }else {
-          print("still got no bitches");
           return const Center(child: CircularProgressIndicator());
         }
       }
@@ -43,14 +43,13 @@ class _ProductListState extends State<ProductList> {
 
   handleProductDelete(Product product) {
     setState(() {
-      DbService().deleteProduct(product.barCode).catchError(() {
+      DbService().deleteProduct(product).catchError(() {
         print("error on deletion");
       });
     });
   }
   
   List<Product> extractProductListFromSnapshot(List<Map>? data) {
-    // print(data);
     return data!.map((e) => Product(e['barcode'].toString(), e['name'].toString(), DateTime.parse(e['expiresOn']), e['quantity'])).toList();
   }
 }

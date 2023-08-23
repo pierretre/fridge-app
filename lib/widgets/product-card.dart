@@ -13,7 +13,7 @@ class ProductCardWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: InkWell(
         onTap: () {
-          print("tap $product");
+          print("[LOG] tap $product");
           // TODO display card infos with editor
         },
         child: Row(
