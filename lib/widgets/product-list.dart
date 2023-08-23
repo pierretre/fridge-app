@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
+import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/db-service.dart';
 import 'package:fridge_app/widgets/product-card.dart';
+import 'package:provider/provider.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key});
@@ -11,46 +13,33 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: DbService().queryAll(), 
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          if (snapshot.data!.isNotEmpty) {
-            List<Product> products = extractProductListFromSnapshot(snapshot.data);
-            return ListView.builder(      
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                return ProductCardWidget(
-                  product: products[index],
-                  deleteCallback: () => handleProductDelete(products[index]),
-                );
-              },
-              shrinkWrap: true,
+        print("[LOG] listview rebuild !!");
+    return Consumer<ProductListModel>(
+      builder: (context, model, child){
+        return ListView.builder(      
+          itemCount: model.products.length,
+          itemBuilder: (context, index) {
+            return ProductCardWidget(
+              product: model.products[index],
+              deleteCallback: () => handleProductDelete(model.products[index], model),
             );
-          }
-          else {
-            return const Center(child: Text("no product scanned yet"));
-          }
-        }else {
-          return const Center(child: CircularProgressIndicator());
-        }
+          },
+          shrinkWrap: true,
+        );
       }
     );
-    
   }
 
-  handleProductDelete(Product product) {
-    setState(() {
-      DbService().deleteProduct(product).catchError(() {
-        print("error on deletion");
-      });
-    });
-  }
-  
-  List<Product> extractProductListFromSnapshot(List<Map>? data) {
-    return data!.map((e) => Product(e['barcode'].toString(), e['name'].toString(), DateTime.parse(e['expiresOn']), e['quantity'])).toList();
+  handleProductDelete(Product product, ProductListModel model) {
+    // setState(() {
+    //   DbService().deleteProduct(product).catchError(() {
+    //     print("error on deletion");
+    //   });
+    // });
+    model.remove(product);
   }
 }
 

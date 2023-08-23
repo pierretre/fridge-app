@@ -4,13 +4,13 @@ class Product {
   DateTime expiresOn;
   int quantity;
 
-  Product(this.barCode, this.name, this.expiresOn, this.quantity);
+  Product(this.name, this.barCode, this.expiresOn, this.quantity);
 
   Map<String, dynamic> toMap () {
     print(expiresOn.toIso8601String());
     return {
-      'barCode': barCode,
       'name': name,
+      'barCode': barCode,
       'expiresOn': expiresOn.toIso8601String(),
       'quantity': quantity,
     };

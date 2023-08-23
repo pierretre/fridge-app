@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fridge_app/models/product.dart';
+import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
 import 'package:fridge_app/widgets/product-list.dart';
@@ -6,16 +8,15 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:path/path.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  // const HomePage({super.key});
+  final ProductListModel _productListModel = ProductListModel();
 
   @override
   Widget build(BuildContext context) {
+    _productListModel.initialize(); // Appel initial pour rafraîchir les produits
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'test',
-          style: TextStyle(color: Color.fromARGB(225, 33, 34, 34))
-        ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 234, 233, 229),
       ),
@@ -56,11 +57,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _openBottomSheet(BuildContext context) {
-    showModalBottomSheet<void>(
+  void _openBottomSheet(BuildContext context) async {
+    await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return ProductFormWidget(barCode: "123");
+        return ProductFormWidget();
       },
     );
   }

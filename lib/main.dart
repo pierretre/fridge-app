@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fridge_app/models/productlist-model.dart';
+import 'package:provider/provider.dart';
 import 'pages/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ProductListModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

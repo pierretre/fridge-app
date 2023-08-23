@@ -33,6 +33,12 @@ class DbService {
 
   Future<int> insertProduct(Product product) async {
     await initDatabase();
+
+    await _database.insert('products', Product("n1", "", DateTime.now(), 1).toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await _database.insert('products', Product("n2", "", DateTime.now(), 1).toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await _database.insert('products', Product("n3", "", DateTime.now(), 1).toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await _database.insert('products', Product("n4", "", DateTime.now(), 1).toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await _database.insert('products', Product("n5", "", DateTime.now(), 1).toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
     return await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -41,13 +47,16 @@ class DbService {
     return await _database.delete('products', where: 'name = ?', whereArgs: [product.name]);
   }
 
-  Future<List<Map>> queryAll() async {
+  Future<List<Product>> queryAll() async {
     await initDatabase();
-    return await _database.query('products');
+    final List<Map<String, dynamic>> maps = await _database.query('products');
+    return List.generate(maps.length, (index) {
+      return Product(maps[index]['barcode'].toString(), maps[index]['name'].toString(), DateTime.parse(maps[index]['expiresOn']), maps[index]['quantity']);
+    });
   }
 
-  Future<int> update(Product product) async {
+  Future<int> update(String name, Product product) async {
     await initDatabase();
-    return await _database.update('products', product.toMap(), where: 'name = ?', whereArgs: [product.name]);
+    return await _database.update('products', product.toMap(), where: 'name = ?', whereArgs: [name]);
   }
 }

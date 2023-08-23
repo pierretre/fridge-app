@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
-import 'package:fridge_app/services/barcode-service.dart';
-import 'package:fridge_app/services/db-service.dart';
-
+import 'package:fridge_app/models/productlist-model.dart';
 
 class ProductFormWidget extends StatefulWidget {
   const ProductFormWidget({super.key, this.barCode, this.product});
@@ -16,6 +14,8 @@ class ProductFormWidget extends StatefulWidget {
 
 class _ProductFormWidgetState extends State<ProductFormWidget> {
   
+  final ProductListModel _model = ProductListModel();
+
   DateTime date = DateTime.now();
   String name = "";
 
@@ -26,7 +26,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
     return Container(
       height: 400, // Hauteur du panneau
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.amber
       ),
       child: InkWell(
@@ -38,24 +38,19 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
               icon: Icon(Icons.keyboard_double_arrow_down),
               iconSize: 45,
             ),            
-            const TextField(
-              // initialValue: initializeProductName(),
-              decoration: InputDecoration(    
-                icon: Icon(Icons.abc),          
+            TextField(
+              decoration: const InputDecoration(
+                icon: Icon(Icons.abc),
                 border: OutlineInputBorder(),
                 hintText: 'Enter the product name',
-                labelText: 'Product',              
+                labelText: 'Product',
               ),
-              
-              // onSaved: (value) => setState(() => name = value ?? ""),
-              // validator: (value) {
-              //   print("[LOG] $value");
-              //   if (value != null && value.isEmpty) {
-              //     return 'S\'il vous plaît entrez votre nom';
-              //   }
-              //   return null;
-              // },
-            ),   
+              onChanged: (value) {
+                setState(() {
+                  name = value;
+                });
+              },
+            ), 
             Row(
               children: [
                 Text("Expires On ${date.year}/${date.month}/${date.day}"),
@@ -81,7 +76,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: ElevatedButton(
-                  onPressed: () => addNewProduct(),
+                  onPressed: () => handleButtonPressed(),
                   child: const Row(
                     children: [
                       Text("Add product"),
@@ -96,12 +91,13 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
       )
     ,);
   }
-
-  void addNewProduct() {
-    // DbService().insertProduct(Product(widget.barCode ?? "", name, date, 1));
-  }
   
   initializeForm() async {
     // name = await BarcodeService().getProductName(widget.barCode);
+  }
+  
+  handleButtonPressed() async {
+    await _model.add(Product(widget.barCode ?? "", name, date, 1));
+    Navigator.of(context).pop();
   }
 }
