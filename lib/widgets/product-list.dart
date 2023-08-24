@@ -34,11 +34,6 @@ class _ProductListState extends State<ProductList> {
   }
 
   handleProductDelete(Product product, ProductListModel model) {
-    // setState(() {
-    //   DbService().deleteProduct(product).catchError(() {
-    //     print("error on deletion");
-    //   });
-    // });
     model.remove(product);
   }
 }

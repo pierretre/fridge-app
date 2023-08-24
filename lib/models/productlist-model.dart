@@ -19,20 +19,20 @@ class ProductListModel extends ChangeNotifier {
   }
 
   Future<void> add(Product product) async {
-    final result = await DbService().insertProduct(product);
+    final result = await DbService().insert(product);
     print("[LOG] inserted => $result");
     await refreshProducts();
   }
   
   void remove(Product product) async {
-    final result = await DbService().deleteProduct(product);
+    final result = await DbService().delete(product);
     print("[LOG] delete => $result");
     await refreshProducts();
   }
 
   void update(String name, Product product) async {
     final result = await DbService().update(name, product);
-    print("[LOG] insert => $result");
+    print("[LOG] update => $result");
     await refreshProducts();
   }
   

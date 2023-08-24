@@ -14,8 +14,6 @@ class ProductFormWidget extends StatefulWidget {
 
 class _ProductFormWidgetState extends State<ProductFormWidget> {
   
-  final ProductListModel _model = ProductListModel();
-
   DateTime date = DateTime.now();
   String name = "";
 
@@ -97,7 +95,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   }
   
   handleButtonPressed() async {
-    await _model.add(Product(widget.barCode ?? "", name, date, 1));
+    await ProductListModel().add(Product(name, "dummy_barcode", date, 1));
     Navigator.of(context).pop();
   }
 }
