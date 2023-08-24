@@ -4,6 +4,7 @@ import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
 import 'package:fridge_app/widgets/product-list.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
   final ProductListModel _productListModel = ProductListModel();
@@ -11,18 +12,40 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _productListModel.initialize(); // Appel initial pour rafraîchir les produits
-
+    SharedPreferences.setMockInitialValues({});
+    
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 234, 233, 229),
+        // backgroundColor: Color.fromARGB(255, 234, 233, 229),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {},
+              child: Icon(
+                Icons.search,
+                size: 26.0,
+              ),
+            )
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {},
+              child: Icon(
+                  Icons.more_vert
+              ),
+            )
+          ),
+        ],
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomRight,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton.large(
+            FloatingActionButton(
               child: const Icon(
                 Icons.barcode_reader
               ),

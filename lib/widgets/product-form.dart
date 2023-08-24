@@ -24,11 +24,14 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
     return Container(
       height: 400, // Hauteur du panneau
       padding: const EdgeInsets.all(5),
-      decoration: const BoxDecoration(
-        color: Colors.amber
-      ),
-      child: InkWell(
-        child: Column(
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.only(
+      //     topRight: Radius.circular(15),
+      //     topLeft: Radius.circular(15)
+      //   ),
+      // ),
+      child: Column(
+        
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton.outlined(
@@ -86,8 +89,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
             )
           ],
         )
-      )
-    ,);
+      );
   }
   
   initializeForm() async {

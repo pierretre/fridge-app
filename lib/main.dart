@@ -20,7 +20,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorSchemeSeed: Colors.lightGreenAccent,
+        colorSchemeSeed: const Color.fromARGB(255, 176, 235, 108),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10))
+          )
+        )
       ),
       debugShowCheckedModeBanner: false,
       home: HomePage()
