@@ -24,14 +24,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
     return Container(
       height: 400, // Hauteur du panneau
       padding: const EdgeInsets.all(5),
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.only(
-      //     topRight: Radius.circular(15),
-      //     topLeft: Radius.circular(15)
-      //   ),
-      // ),
-      child: Column(
-        
+      child: Column(        
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton.outlined(
@@ -52,26 +45,28 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
                 });
               },
             ), 
-            Row(
-              children: [
-                Text("Expires On ${date.year}/${date.month}/${date.day}"),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () async {
-                    DateTime? newDate = await showDatePicker(
-                      context: context, 
-                      initialDate: date, 
-                      firstDate: DateTime(2000), 
-                      lastDate: DateTime(2100)
-                    );
-                    if(newDate != null) setState(() => date = newDate);
-                  },
-                  icon: const Icon(
-                    Icons.calendar_view_day_outlined,
-                    size: 40,
-                  ), 
-                )
-              ],
+            ElevatedButton(
+              onPressed: () async {
+                DateTime? newDate = await showDatePicker(
+                  context: context, 
+                  initialDate: date, 
+                  firstDate: DateTime(2000), 
+                  lastDate: DateTime(2100)
+                );
+                if(newDate != null) setState(() => date = newDate);
+              }, 
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.calendar_today_rounded,
+                      size: 30,
+                    ),
+                  ),                  
+                  Text("Expires On ${date.year}/${date.month}/${date.day}"),
+                ],
+              )
             ),
             Flexible(
               child: Padding(
