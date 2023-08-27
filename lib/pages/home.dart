@@ -40,38 +40,42 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomRight,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              child: const Icon(
-                Icons.barcode_reader
-              ),
-              onPressed: () async => barcodeScanning(context)
-            ),
-            FloatingActionButton(
-              child: const Icon(
-                Icons.add
-              ),
-              onPressed: () => _openBottomSheet(context)
-            ),
-          ].map((widget) => Padding(
-            padding: const EdgeInsets.all(16),
-            child: widget,
-          )).toList(),
-        )
+      floatingActionButton: IntrinsicHeight(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(45)),
+            color: Colors.black12,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: IntrinsicWidth(
+            child: Row( 
+              children: [
+                FloatingActionButton(
+                  child: const Icon(Icons.barcode_reader), 
+                  onPressed: () async => barcodeScanning(context)
+                ),
+                const VerticalDivider(
+                  thickness: 3,
+                  color: Color.fromARGB(63, 0, 0, 0),
+                  indent: 5,
+                  endIndent: 5,
+                ),
+                FloatingActionButton(
+                  child: const Icon(Icons.add),
+                  onPressed: () => _openBottomSheet(context)
+                ),
+              ].map((widget) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: widget,
+              )).toList(),
+            )
+          ),
+        ),
       ),
-    
-      // FloatingActionButton(
-      //   child: const Icon(
-      //     Icons.barcode_reader
-      //   ),
-      //   onPressed: () async => barcodeScanning(context)
-      //   // onPressed: () => _openBottomSheet(context),
-      //   // child: Icon(Icons.arrow_upward),
-      // ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        child: Container(height: 50.0),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: const ProductList(),
     );

@@ -25,64 +25,64 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
       height: 400, // Hauteur du panneau
       padding: const EdgeInsets.all(5),
       child: Column(        
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton.outlined(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(Icons.keyboard_double_arrow_down),
-              iconSize: 45,
-            ),            
-            TextField(
-              decoration: const InputDecoration(
-                icon: Icon(Icons.abc),
-                border: OutlineInputBorder(),
-                hintText: 'Enter the product name',
-                labelText: 'Product',
-              ),
-              onChanged: (value) {
-                setState(() {
-                  name = value;
-                });
-              },
-            ), 
-            ElevatedButton(
-              onPressed: () async {
-                DateTime? newDate = await showDatePicker(
-                  context: context, 
-                  initialDate: date, 
-                  firstDate: DateTime(2000), 
-                  lastDate: DateTime(2100)
-                );
-                if(newDate != null) setState(() => date = newDate);
-              }, 
-              child: Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(
-                      Icons.calendar_today_rounded,
-                      size: 30,
-                    ),
-                  ),                  
-                  Text("Expires On ${date.year}/${date.month}/${date.day}"),
-                ],
-              )
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: ElevatedButton(
-                  onPressed: () => handleButtonPressed(),
-                  child: const Row(
-                    children: [
-                      Text("Add product"),
-                      Icon(Icons.add)
-                    ]
-                  ),
-                ),
-              )
-            )
-          ],
+          // mainAxisSize: MainAxisSize.min,
+          // children: [
+          //   IconButton.outlined(
+          //     onPressed: () => Navigator.of(context).pop(),
+          //     icon: Icon(Icons.keyboard_double_arrow_down),
+          //     iconSize: 45,
+          //   ),            
+          //   TextField(
+          //     decoration: const InputDecoration(
+          //       icon: Icon(Icons.abc),
+          //       border: OutlineInputBorder(),
+          //       hintText: 'Enter the product name',
+          //       labelText: 'Product',
+          //     ),
+          //     onChanged: (value) {
+          //       setState(() {
+          //         name = value;
+          //       });
+          //     },
+          //   ), 
+          //   ElevatedButton(
+          //     onPressed: () async {
+          //       DateTime? newDate = await showDatePicker(
+          //         context: context, 
+          //         initialDate: date, 
+          //         firstDate: DateTime(2000), 
+          //         lastDate: DateTime(2100)
+          //       );
+          //       if(newDate != null) setState(() => date = newDate);
+          //     }, 
+          //     child: Row(
+          //       children: [
+          //         const Padding(
+          //           padding: EdgeInsets.all(10),
+          //           child: Icon(
+          //             Icons.calendar_today_rounded,
+          //             size: 30,
+          //           ),
+          //         ),                  
+          //         Text("Expires On ${date.year}/${date.month}/${date.day}"),
+          //       ],
+          //     )
+          //   ),
+          //   Flexible(
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(10),
+          //       child: ElevatedButton(
+          //         onPressed: () => handleButtonPressed(),
+          //         child: const Row(
+          //           children: [
+          //             Text("Add product"),
+          //             Icon(Icons.add)
+          //           ]
+          //         ),
+          //       ),
+          //     )
+          //   )
+          // ],
         )
       );
   }

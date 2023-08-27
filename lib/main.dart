@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorSchemeSeed: const Color.fromARGB(255, 176, 235, 108),
         bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10))
           )
