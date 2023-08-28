@@ -19,8 +19,10 @@ class ProductListModel extends ChangeNotifier {
 
   Future<void> add(Product product) async {
     final prefs = await SharedPreferences.getInstance();
-    DbService().insert(product).then((value) async => {
-      product.barCode != "" && await prefs.setString(product.barCode, product.name)
+    await DbService().insert(product).then((value) async {
+      if (product.barcode != null) {
+        await prefs.setString(product.barcode!, product.name);
+      }
     });
     await refreshProducts();
   }
@@ -32,7 +34,7 @@ class ProductListModel extends ChangeNotifier {
   }
 
   void update(String name, Product product) async {
-    final result = await DbService().update(name, product);
+    final result = await DbService().update(product);
     print("[LOG] update => $result");
     await refreshProducts();
   }

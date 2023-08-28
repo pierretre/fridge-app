@@ -1,19 +1,28 @@
 import 'package:intl/intl.dart';
 
 class Product {
-  String barCode;
-  String name; 
+
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+
+  final int? id;
+  String name;
+  String? barcode;
   DateTime expiresOn;
   int quantity;
 
-  final DateFormat formatter = DateFormat('yyyy-MM-dd');
-  
-  Product(this.name, this.barCode, this.expiresOn, this.quantity);
+  Product({
+    this.id,
+    required this.name,
+    this.barcode,
+    required this.expiresOn,
+    required this.quantity,
+  });
 
-  Map<String, dynamic> toMap () {
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
-      'barcode': barCode,
+      'barcode': barcode,
       'expiresOn': formatter.format(expiresOn),
       'quantity': quantity,
     };

@@ -24,7 +24,7 @@ class DbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE products(name TEXT PRIMARY KEY, barcode TEXT, expiresOn DATE, quantity INTEGER)',
+          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL)',
         );
       },
       version: _db_version,
@@ -36,19 +36,27 @@ class DbService {
     return await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<int> update(Product product) async {
+    await initDatabase();
+    return await _database.update('products', product.toMap(), where: 'id = ?', whereArgs: [product.id]);
+  }
+
   Future<int> delete(Product product) async {
     await initDatabase();
-    return await _database.delete('products', where: 'name = ?', whereArgs: [product.name]);
+    return await _database.delete('products', where: 'id = ?', whereArgs: [product.id]);
   }
 
   Future<List<Product>> queryAll() async {
     await initDatabase();
     final List<Map<String, dynamic>> maps = await _database.query('products');
-    return List.generate(maps.length, (index) => Product(maps[index]['name'].toString(), maps[index]['barcode'].toString(), DateTime.parse(maps[index]['expiresOn']), maps[index]['quantity']));
-  }
-
-  Future<int> update(String name, Product product) async {
-    await initDatabase();
-    return await _database.update('products', product.toMap(), where: 'name = ?', whereArgs: [name]);
+    return List.generate(
+      maps.length, (index) => Product(
+        id: maps[index]['id'], 
+        name: maps[index]['name'].toString(), 
+        barcode: maps[index]['barcode'].toString(), 
+        expiresOn: DateTime.parse(maps[index]['expiresOn']), 
+        quantity: maps[index]['quantity']
+      )
+    );
   }
 }

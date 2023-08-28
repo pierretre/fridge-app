@@ -34,8 +34,6 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
     
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if(keyboardHeight > _keyboardMaxHeight) _keyboardMaxHeight = keyboardHeight;
-
-    print("[LOG] rebuild $_keyboardMaxHeight");
     
     return Container(
       height: _keyboardMaxHeight  + 200,
@@ -94,7 +92,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   }
     
   handleButtonPressed() async {
-    await ProductListModel().add(Product(_name, "dummy_barcode", _selectedDate, 1));
+    await ProductListModel().add(Product(name: _name, barcode: "dummy_barcode", expiresOn: _selectedDate, quantity: 1));
     Navigator.of(context).pop();
   }
   
