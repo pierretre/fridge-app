@@ -39,7 +39,7 @@ class ProductListModel extends ChangeNotifier {
   
   refreshProducts() async {
     _products = await DbService().queryAll();  
-    print("[LOG] _products refreshed $_products");
+    // print("[LOG] _products refreshed $_products");
     notifyListeners();
   }
 }

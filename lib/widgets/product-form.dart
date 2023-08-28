@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/models/productlist-model.dart';
+import 'package:fridge_app/utils/utils.dart';
 
 class ProductFormWidget extends StatefulWidget {
   const ProductFormWidget({super.key, this.barCode, this.product});
@@ -14,85 +15,97 @@ class ProductFormWidget extends StatefulWidget {
 
 class _ProductFormWidgetState extends State<ProductFormWidget> {
   
-  DateTime date = DateTime.now();
-  String name = "";
+  var _selectedDate;
+  var _name;
+
+  num _keyboardMaxHeight = 0;
+
+  bool _dateSelect = false;
+  @override
+  void initState() {
+    print("[LOG] form initialization");
+    _selectedDate = DateTime.now().add(const Duration(days: 7));
+    _name = "";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    if(keyboardHeight > _keyboardMaxHeight) _keyboardMaxHeight = keyboardHeight;
 
-    initializeForm();
+    print("[LOG] rebuild $_keyboardMaxHeight");
+    
     return Container(
-      height: 400, // Hauteur du panneau
-      padding: const EdgeInsets.all(5),
-      child: Column(        
-          // mainAxisSize: MainAxisSize.min,
-          // children: [
-          //   IconButton.outlined(
-          //     onPressed: () => Navigator.of(context).pop(),
-          //     icon: Icon(Icons.keyboard_double_arrow_down),
-          //     iconSize: 45,
-          //   ),            
-          //   TextField(
-          //     decoration: const InputDecoration(
-          //       icon: Icon(Icons.abc),
-          //       border: OutlineInputBorder(),
-          //       hintText: 'Enter the product name',
-          //       labelText: 'Product',
-          //     ),
-          //     onChanged: (value) {
-          //       setState(() {
-          //         name = value;
-          //       });
-          //     },
-          //   ), 
-          //   ElevatedButton(
-          //     onPressed: () async {
-          //       DateTime? newDate = await showDatePicker(
-          //         context: context, 
-          //         initialDate: date, 
-          //         firstDate: DateTime(2000), 
-          //         lastDate: DateTime(2100)
-          //       );
-          //       if(newDate != null) setState(() => date = newDate);
-          //     }, 
-          //     child: Row(
-          //       children: [
-          //         const Padding(
-          //           padding: EdgeInsets.all(10),
-          //           child: Icon(
-          //             Icons.calendar_today_rounded,
-          //             size: 30,
-          //           ),
-          //         ),                  
-          //         Text("Expires On ${date.year}/${date.month}/${date.day}"),
-          //       ],
-          //     )
-          //   ),
-          //   Flexible(
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(10),
-          //       child: ElevatedButton(
-          //         onPressed: () => handleButtonPressed(),
-          //         child: const Row(
-          //           children: [
-          //             Text("Add product"),
-          //             Icon(Icons.add)
-          //           ]
-          //         ),
-          //       ),
-          //     )
-          //   )
-          // ],
-        )
-      );
+      height: _keyboardMaxHeight  + 200,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Column(  
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 5,
+                child: TextField(
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Product name',
+                  ),
+                  onChanged: (value) => setState(() => _name = value),
+                  onTap: () => setState(() => _dateSelect = false),
+                ),
+              ),
+              Flexible(
+                child: IconButton(
+                  icon: const Icon(Icons.barcode_reader), 
+                  onPressed: () { print("[LOG] tap barcode scan"); },
+                )
+              )
+            ],
+          ),
+          Flexible(
+            child: OutlinedButton.icon(
+              onPressed: () => focusDatePickingPanel(),
+              icon: const Icon(Icons.calendar_month_outlined), 
+              label: Text(Utils.getProductLastingDays(_selectedDate).$1)) 
+          ),
+          if(_dateSelect) Expanded(
+            child: CalendarDatePicker(
+              initialDate: _selectedDate, 
+              firstDate: DateTime.now(), 
+              lastDate: DateTime(2050), 
+              onDateChanged: (value) => setState(() => _selectedDate = value)
+            ),
+          ),
+          const Divider(),      
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton.icon(
+              onPressed: validProductInfos() ? () => handleButtonPressed() : null,
+              icon: const Icon(Icons.send),
+              label: const Text("Add product")
+            ),
+          )
+        ],
+      )
+    );
   }
-  
-  initializeForm() async {
-    // name = await BarcodeService().getProductName(widget.barCode);
-  }
-  
+    
   handleButtonPressed() async {
-    await ProductListModel().add(Product(name, "dummy_barcode", date, 1));
+    await ProductListModel().add(Product(_name, "dummy_barcode", _selectedDate, 1));
     Navigator.of(context).pop();
+  }
+  
+  bool validProductInfos() {
+    return _name != "";
+    // && date.isAfter(DateTime.now() - )
+  }
+  
+  focusDatePickingPanel() {
+    print("[LOG] unfocus");
+    FocusScope.of(context).requestFocus(FocusNode());
+    setState(() => _dateSelect = true);
   }
 }

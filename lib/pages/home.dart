@@ -11,19 +11,19 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _productListModel.initialize(); // Appel initial pour rafraîchir les produits
+    _productListModel.initialize();
+    // ignore: invalid_use_of_visible_for_testing_member
     SharedPreferences.setMockInitialValues({});
     
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        // backgroundColor: Color.fromARGB(255, 234, 233, 229),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {},
-              child: Icon(
+              child: const Icon(
                 Icons.search,
                 size: 26.0,
               ),
@@ -33,8 +33,8 @@ class HomePage extends StatelessWidget {
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {},
-              child: Icon(
-                  Icons.more_vert
+              child: const Icon(
+                Icons.more_vert
               ),
             )
           ),
@@ -42,9 +42,9 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: IntrinsicHeight(
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(45)),
-            color: Colors.black12,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(45)),
+            color: Color.fromARGB(113, 0, 0, 0),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: IntrinsicWidth(
@@ -85,13 +85,13 @@ class HomePage extends StatelessWidget {
     await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return ProductFormWidget();
+        return const ProductFormWidget();
       },
     );
   }
   
   void productScan (BuildContext context) async {
-    String? name = await barcodeScanning(context);
+    // String? name = await barcodeScanning(context);
   }
 
   Future<String?> barcodeScanning(BuildContext context) async {

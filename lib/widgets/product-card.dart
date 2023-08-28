@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
-import 'package:intl/intl.dart';
+import 'package:fridge_app/utils/utils.dart';
 
 class ProductCardWidget extends StatelessWidget {
   const ProductCardWidget({super.key, required this.product, required this.deleteCallback});
@@ -8,12 +8,10 @@ class ProductCardWidget extends StatelessWidget {
   final Product product;
   final deleteCallback;
   
-  static final DateFormat _formatter = DateFormat('yyyy-MM-dd');
-
   @override
   Widget build(BuildContext context) {
 
-    final (date, color) = getProductLastingDays();
+    final (remainingTime, color) = Utils.getProductLastingDays(product.expiresOn);
 
     return Card(
       color: color.withOpacity(.8),
@@ -30,7 +28,7 @@ class ProductCardWidget extends StatelessWidget {
               width: 300,
               child: ListTile(
                 title: Text(product.name),
-                subtitle: Text(date),
+                subtitle: Text(remainingTime),
                 isThreeLine: true,
               )
             ),
@@ -51,15 +49,5 @@ class ProductCardWidget extends StatelessWidget {
         ),   
       )     
     );
-  }
-
-  (String, Color) getProductLastingDays () {
-    final difference = product.expiresOn.difference(DateTime.now()).inDays;
-
-    if(difference < 0) return ("Expired", Colors.red);
-    if(difference == 0) return ("Today", Colors.orange);
-    final weeks = difference % 7;
-    if(difference >= 7) return ("$weeks week${weeks == 1 ? '' : 's'}", Colors.lightGreen);
-    return ("$difference days", Colors.yellow);
   }
 }

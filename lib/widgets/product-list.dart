@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/models/productlist-model.dart';
-import 'package:fridge_app/services/db-service.dart';
 import 'package:fridge_app/widgets/product-card.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +15,6 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-        print("[LOG] listview rebuild !!");
     return Consumer<ProductListModel>(
       builder: (context, model, child){
         return ListView.builder(      

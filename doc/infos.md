@@ -3,8 +3,8 @@
 - [x] Implémentation de la sauvegarde des produits en BDD sqlite (ajout, suppression)
 - [x] Affichage des produits en une liste scrollable **[V1]**
 - [x] Affichage des produits en une liste depuis BDD **[V2]**
-- [ ] (UI) Affichage du produit avec couleur selon priorité, date, ... **[V3]** liste
-- [ ] Scanning de codes barres avec un simple bouton
+- [x] (UI) Affichage du produit avec couleur selon priorité, date, ... **[V3]** liste
+- [x] Scanning de codes barres avec un simple bouton
 - [x] Recherche du code barre grâce à un appel API pour récupérer les infos de base du produit 
 - [ ] Affichage du nom du produit avec possibilité d'édition 
 - [ ] Implémentation de la mise à jour des infos produit
