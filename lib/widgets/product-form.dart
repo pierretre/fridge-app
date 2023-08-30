@@ -4,9 +4,10 @@ import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/utils/utils.dart';
 
 class ProductFormWidget extends StatefulWidget {
-  const ProductFormWidget({super.key, this.barCode, this.product});
+  const ProductFormWidget({super.key, this.name, this.thumbnail, this.product});
 
-  final String? barCode;
+  final String? name;
+  final String? thumbnail;
   final Product? product;
   
   @override
@@ -25,7 +26,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   void initState() {
     print("[LOG] form initialization");
     _selectedDate = DateTime.now().add(const Duration(days: 7));
-    _name = "";
+    _name = widget.name ?? "";
     super.initState();
   }
 
@@ -92,7 +93,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   }
     
   handleButtonPressed() async {
-    await ProductListModel().add(Product(name: _name, barcode: "dummy_barcode", expiresOn: _selectedDate, quantity: 1));
+    await ProductListModel().add(Product(name: _name, barcode: "dummy_barcode", expiresOn: _selectedDate, quantity: 1, thumbnail: widget.thumbnail));
     Navigator.of(context).pop();
   }
   

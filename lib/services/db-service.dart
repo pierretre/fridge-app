@@ -24,7 +24,7 @@ class DbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL)',
+          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL, thumbnail TEXT)',
         );
       },
       version: _db_version,

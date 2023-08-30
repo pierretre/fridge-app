@@ -9,6 +9,7 @@ class Product {
   String? barcode;
   DateTime expiresOn;
   int quantity;
+  String? thumbnail;
 
   Product({
     this.id,
@@ -16,6 +17,7 @@ class Product {
     this.barcode,
     required this.expiresOn,
     required this.quantity,
+    this.thumbnail
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class Product {
       'barcode': barcode,
       'expiresOn': formatter.format(expiresOn),
       'quantity': quantity,
+      'thumbnail': thumbnail,
     };
   }
 

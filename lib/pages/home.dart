@@ -4,6 +4,7 @@ import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
 import 'package:fridge_app/widgets/product-list.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,7 +21,7 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {},
               child: const Icon(
@@ -30,7 +31,7 @@ class HomePage extends StatelessWidget {
             )
           ),
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {},
               child: const Icon(
@@ -52,7 +53,7 @@ class HomePage extends StatelessWidget {
               children: [
                 FloatingActionButton(
                   child: const Icon(Icons.barcode_reader), 
-                  onPressed: () async => barcodeScanning(context)
+                  onPressed: () async => _productScan(context)
                 ),
                 const VerticalDivider(
                   thickness: 3,
@@ -62,7 +63,7 @@ class HomePage extends StatelessWidget {
                 ),
                 FloatingActionButton(
                   child: const Icon(Icons.add),
-                  onPressed: () => _openBottomSheet(context)
+                  onPressed: () => _openBottomSheet(context, null, null)
                 ),
               ].map((widget) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -81,29 +82,42 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _openBottomSheet(BuildContext context) async {
+  void _openBottomSheet(BuildContext context, String? name, String? thumbnail) async {
     await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return const ProductFormWidget();
+        return ProductFormWidget(name: name, thumbnail: thumbnail);
       },
     );
   }
   
-  void productScan (BuildContext context) async {
-    // String? name = await barcodeScanning(context);
+  void _productScan (BuildContext context) async {
+    // final (name, thumbnail) = await BarcodeService().barcodeScanning();
+    // print("[LOG] name: $name thumb: $thumbnail");
+    // _openBottomSheet(context, name, thumbnail);
+
+    // final res = await getProduct();
+    // final res = await BarcodeService().getProductName("978020137962");
+    final res = await BarcodeService().barcodeScanningBis();
+    print("[LOG] result=$res");
   }
 
-  Future<String?> barcodeScanning(BuildContext context) async {
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", 
-                                              "Cancel",
-                                              false, 
-                                              ScanMode.BARCODE);
-    
-    print("[LOG] result : $barcodeScanRes");
+  Future<String?> getProduct() async {
+    var barcode = '0048151623426';
 
-    if(barcodeScanRes == "-1") return null;
-    
-    return await BarcodeService().getProductName(barcodeScanRes);
+    final ProductQueryConfiguration configuration = ProductQueryConfiguration(
+      barcode,
+      language: OpenFoodFactsLanguage.GERMAN,
+      fields: [ProductField.ALL],
+      version: ProductQueryVersion.v3,
+    );
+    final ProductResultV3 result =
+        await OpenFoodAPIClient.getProductV3(configuration);
+
+    if (result.status == ProductResultV3.statusSuccess) {
+      return result.product.toString();
+    } else {
+      throw Exception('product not found, please insert data for $barcode');
+    }
   }
 }
