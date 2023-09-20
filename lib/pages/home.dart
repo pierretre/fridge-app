@@ -3,8 +3,6 @@ import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
 import 'package:fridge_app/widgets/product-list.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
@@ -92,32 +90,7 @@ class HomePage extends StatelessWidget {
   }
   
   void _productScan (BuildContext context) async {
-    // final (name, thumbnail) = await BarcodeService().barcodeScanning();
-    // print("[LOG] name: $name thumb: $thumbnail");
-    // _openBottomSheet(context, name, thumbnail);
-
-    // final res = await getProduct();
-    // final res = await BarcodeService().getProductName("978020137962");
-    final res = await BarcodeService().barcodeScanningBis();
+    final res = await BarcodeService().getProductInfosFromAPI("3017620422003");
     print("[LOG] result=$res");
-  }
-
-  Future<String?> getProduct() async {
-    var barcode = '0048151623426';
-
-    final ProductQueryConfiguration configuration = ProductQueryConfiguration(
-      barcode,
-      language: OpenFoodFactsLanguage.GERMAN,
-      fields: [ProductField.ALL],
-      version: ProductQueryVersion.v3,
-    );
-    final ProductResultV3 result =
-        await OpenFoodAPIClient.getProductV3(configuration);
-
-    if (result.status == ProductResultV3.statusSuccess) {
-      return result.product.toString();
-    } else {
-      throw Exception('product not found, please insert data for $barcode');
-    }
   }
 }

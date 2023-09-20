@@ -5,20 +5,24 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
-
-
 class BarcodeService {
 
   static final BarcodeService _instance = BarcodeService._internal();
-  static const _apiUrlV2 = "https://world.openfoodfacts.net/api/v3/product/";
-  static const _apiUrlV0 = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m";
+  static const _apiUrlV2 = "https://world.openfoodfacts.net/api/product/";
 
   factory BarcodeService() {
     return _instance;
   }
 
-  BarcodeService._internal();
+  BarcodeService._internal() {
+    OpenFoodAPIConfiguration.userAgent = const UserAgent(name: 'Frdge app', url: 'https://github.com/pierretre/fridge-app');
 
+    OpenFoodAPIConfiguration.globalLanguages = <OpenFoodFactsLanguage>[
+      OpenFoodFactsLanguage.ENGLISH
+    ];
+
+    OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.FRANCE;
+  }
 
   Future<String> barcodeExtract() async {
     return await FlutterBarcodeScanner.scanBarcode("#ff6666", 
@@ -27,64 +31,41 @@ class BarcodeService {
                                               ScanMode.BARCODE);
   }
 
-
-  Future<(String?, String?)> barcodeScanningBis() async {
-
-    OpenFoodAPIConfiguration.userAgent = UserAgent(name: 'Your app name', url: 'Your url, if applicable');
-
-    OpenFoodAPIConfiguration.globalLanguages = <OpenFoodFactsLanguage>[
-      OpenFoodFactsLanguage.ENGLISH
-    ];
-
-    OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.FRANCE;
-
-    // String barcode = await barcodeExtract();
-    
-    // print("[LOG] result : $barcode");
-
-    // if(barcode == "-1") barcode = "3017620422003";
-    // print("[LOG] barcode after : $barcode");
-    
-    final barcode = "3017620422003";
-
+  Future<Map<String, String?>> getProductInfosFromAPI(String barcode) async {
     final ProductQueryConfiguration configuration = ProductQueryConfiguration(
       barcode,
-      fields: [ProductField.SELECTED_IMAGE, ProductField.NAME_ALL_LANGUAGES],
+      fields: [ProductField.SELECTED_IMAGE, ProductField.GENERIC_NAME, ProductField.NAME],
       version: ProductQueryVersion.v3,
+      country: OpenFoodAPIConfiguration.globalCountry
     );
-    final ProductResultV3 result =
-        await OpenFoodAPIClient.getProductV3(configuration);
+    final ProductResultV3 result = await OpenFoodAPIClient.getProductV3(configuration);
 
     if (result.status == ProductResultV3.statusSuccess) {
-      print(result.product);
-      return (null, null);
+      return {
+        'product_label' : result.product?.productName,
+        'product_description' : result.product?.genericName,
+        'product_thumbnail' : ""
+      };
     } else {
       throw Exception('product not found, please insert data for $barcode');
     }
   }
 
   Future<(String?, String?)> barcodeScanning() async {
-    // return barcodeScanningBis();
-
     String barcode = await barcodeExtract();
+    if(barcode == "-1") return (null, null);
     
-    print("[LOG] result : $barcode");
+    final res = await getProductInfosFromAPI(barcode);
 
-    if(barcode == "-1") barcode = "978020137962";
-    
-    final res = await BarcodeService().getProductName(barcode);
-
-    print("[LOG] res=$res");
-
-    return res;
+    return (null, null);
   }
 
   Future<(String?, String?)> getProductName(String barcode) async {
-    // // cache system
-    // final prefs = await SharedPreferences.getInstance();
+    // cache system
+    final prefs = await SharedPreferences.getInstance();
 
-    // print(prefs.getKeys());
-    // if(prefs.containsKey(barcode)) return prefs.get(barcode) as (String?, String?);
+    print(prefs.getKeys());
+    if(prefs.containsKey(barcode)) return prefs.get(barcode) as (String?, String?);
 
     print("[LOG] getProductName($barcode)");
 
