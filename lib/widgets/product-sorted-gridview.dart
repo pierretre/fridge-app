@@ -35,8 +35,8 @@ class _ProductSortedGridViewState extends State<ProductSortedGridView> {
       itemCount: items.length,
       itemBuilder: (context, index) {
         int key = items.keys.elementAt(index);
-      return Card(
-          // color: Utils.getPriorityColor(key),
+        return Card(
+          color: Colors.grey.shade100,
           child: Column(
             children: [
               Align(
@@ -51,6 +51,7 @@ class _ProductSortedGridViewState extends State<ProductSortedGridView> {
                 children: List.generate(items[key]!.length, (index) {
                   return ProductGridCardWidget(
                     product: items[key]![index],
+                    priority: key,
                     deleteCallback: () => handleProductDelete(items[key]![index], model),
                   );
                 }),

@@ -32,14 +32,14 @@ class Utils {
 
   static Map<int, List<Product>>  sortProductItemsPriorityList(List<Product> items) {
     Map<int, List<Product>> sortedItems = {};
-    items.forEach((element) { 
+    for (var element in items) { 
       final priority = _getPriority(element.expiresOn);
       if(sortedItems[priority] == null) {
         sortedItems[priority] = [element];
       } else {
         sortedItems[priority]!.add(element);
       }
-    });
+    }
     return sortedItems;
   }
 
@@ -48,6 +48,6 @@ class Utils {
   }
 
   static getPriorityColor(int priority) {
-    return _PRIORITY_COLORS[priority].withOpacity(.5);
+    return _PRIORITY_COLORS[priority].withOpacity(.8);
   }
 }

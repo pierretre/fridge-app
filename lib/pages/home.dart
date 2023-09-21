@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
-import 'package:fridge_app/widgets/product-gridview.dart';
 import 'package:fridge_app/widgets/product-sorted-gridview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -77,8 +76,6 @@ class HomePage extends StatelessWidget {
         child: Container(height: 50.0),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // body: const ProductList(),
-      // body: const ProductGridView(),
       body: const ProductSortedGridView(),
     );
   }
