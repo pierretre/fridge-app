@@ -1,16 +1,32 @@
 # fridge_app
 
-A new Flutter project.
+A Flutter project.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Application de gestion des dates de péremption dans frigo
+## Fonctionnalités principales :
+- [x] Implémentation de la sauvegarde des produits en BDD sqlite (ajout, suppression)
+- [x] Affichage des produits en une liste scrollable **[V1]**
+- [x] Affichage des produits en une liste depuis BDD **[V2]**
+- [x] (UI) Affichage du produit avec couleur selon priorité, date, ... **[V3]** liste
+- [x] Scanning de codes barres avec un simple bouton
+- [x] Recherche du code barre grâce à un appel API pour récupérer les infos de base du produit 
+- [x] [BUG] Mise à jour de la recherche de code barre avec nouvelle version de l'API
+- [ ] Affichage du nom du produit avec sa descripton, possibilité d'édition, photo
+- [ ] Implémentation de la mise à jour des infos produit
+- [ ] Sélecteur "se souvenir du produit"
+- [ ] Scanning de la date de péremption ou saisie manuelle
+- [ ] Affichage de toutes les infos avec possibilité de les modifier
+- [ ] Implémentation du tri de la liste en fonction de l'ordre des dates
+- [ ] Implémentation d'un système de notification quand un produit se rapproche de sa date limite
+- [ ] Ajout d'un bouton pour retourner en haut de la liste
+- [ ] Implémentation barre de recherche pour chercher produit par nom ou code barre
+- [ ] Affichage par date/nom/catégorie
+  
+## Fonctionnalités avancées
+- [ ] Mise en cache/BDD des codes barre pour recherche du nom plus rapide
+- [ ] Quand on scan un produt existant ou ajout produit de même nom : Popup avec quantité et options (supprimer, ajouter plusieurs produit) si scan du même code barre (***mettre un message pour proposer d'ajouter une quantité au produit existant, sinon supprimer***)
+- [ ] Panneau de gestion des notifications pour pouvoir régler le délai ... 
+- [ ] Gestion des quantités 
+- [ ] Implémenter l'édition et la suppression des produits avec swipe droit/gauche de la card 
+- [ ] Versions FR / EN
+- [ ] Implémentation de la proposition de recettes 
