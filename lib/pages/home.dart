@@ -90,7 +90,7 @@ class HomePage extends StatelessWidget {
   }
   
   void _productScan (BuildContext context) async {
-    final res = await BarcodeService().getProductInfosFromAPI("3017620422003");
+    final res = await BarcodeService().barcodeScanning();
     print("[LOG] result=$res");
   }
 }

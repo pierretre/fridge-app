@@ -24,7 +24,7 @@ class BarcodeService {
                                               ScanMode.BARCODE);
   }
 
-  Future<Map<String, String?>> getProductInfosFromAPI(String barcode) async {
+  Future<Map<String, String?>> _getProductInfosFromAPI(String barcode) async {
     final ProductQueryConfiguration configuration = ProductQueryConfiguration(
       barcode,
       fields: [ProductField.SELECTED_IMAGE, ProductField.GENERIC_NAME, ProductField.NAME],
@@ -45,12 +45,12 @@ class BarcodeService {
     }
   }
 
-  Future<(String?, String?)> barcodeScanning() async {
+  Future<Map<String, String?>> barcodeScanning() async {
     String barcode = await barcodeExtract();
-    if(barcode == "-1") return (null, null);
-    
-    final res = await getProductInfosFromAPI(barcode);
 
-    return (null, null);
+    // FOR TESTING PURPOSE : TODO
+    if(barcode == "-1") barcode = "3017620422003";
+    
+    return await _getProductInfosFromAPI(barcode);
   }
 }   
