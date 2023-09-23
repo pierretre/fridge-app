@@ -6,6 +6,7 @@
 - [x] (UI) Affichage du produit avec couleur selon priorité, date, ... **[V3]** liste
 - [x] Scanning de codes barres avec un simple bouton
 - [x] Recherche du code barre grâce à un appel API pour récupérer les infos de base du produit 
+- [x] [BUG] Mise à jour de la recherche de code barre avec nouvelle version de l'API
 - [ ] Affichage du nom du produit avec possibilité d'édition 
 - [ ] Implémentation de la mise à jour des infos produit
 - [ ] Scanning de la date de péremption ou saisie manuelle

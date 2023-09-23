@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 class DbService {
   static final DbService _instance = DbService._internal();
   static const _db_name = "products.db";
-  static const _db_version = 1;
+  static const _db_version = 2;
 
   late Database _database;
 
@@ -19,12 +19,13 @@ class DbService {
   Future<void> initDatabase () async {
     WidgetsFlutterBinding.ensureInitialized();
     String path = join(await getDatabasesPath(), _db_name);
-    
+    // databaseFactory.deleteDatabase(path);
+
     _database = await openDatabase(
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL)',
+          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL, thumbnail TEXT)',
         );
       },
       version: _db_version,

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
-import 'package:fridge_app/widgets/product-list.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:fridge_app/widgets/product-sorted-gridview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,7 +19,7 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {},
               child: const Icon(
@@ -30,7 +29,7 @@ class HomePage extends StatelessWidget {
             )
           ),
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {},
               child: const Icon(
@@ -52,7 +51,7 @@ class HomePage extends StatelessWidget {
               children: [
                 FloatingActionButton(
                   child: const Icon(Icons.barcode_reader), 
-                  onPressed: () async => barcodeScanning(context)
+                  onPressed: () async => _productScan(context)
                 ),
                 const VerticalDivider(
                   thickness: 3,
@@ -62,7 +61,7 @@ class HomePage extends StatelessWidget {
                 ),
                 FloatingActionButton(
                   child: const Icon(Icons.add),
-                  onPressed: () => _openBottomSheet(context)
+                  onPressed: () => _openBottomSheet(context, null, null)
                 ),
               ].map((widget) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -77,33 +76,21 @@ class HomePage extends StatelessWidget {
         child: Container(height: 50.0),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: const ProductList(),
+      body: const ProductSortedGridView(),
     );
   }
 
-  void _openBottomSheet(BuildContext context) async {
+  void _openBottomSheet(BuildContext context, String? name, String? thumbnail) async {
     await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return const ProductFormWidget();
+        return ProductFormWidget(name: name, thumbnail: thumbnail);
       },
     );
   }
   
-  void productScan (BuildContext context) async {
-    // String? name = await barcodeScanning(context);
-  }
-
-  Future<String?> barcodeScanning(BuildContext context) async {
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", 
-                                              "Cancel",
-                                              false, 
-                                              ScanMode.BARCODE);
-    
-    print("[LOG] result : $barcodeScanRes");
-
-    if(barcodeScanRes == "-1") return null;
-    
-    return await BarcodeService().getProductName(barcodeScanRes);
+  void _productScan (BuildContext context) async {
+    final res = await BarcodeService().getProductInfosFromAPI("3017620422003");
+    print("[LOG] result=$res");
   }
 }
