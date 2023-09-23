@@ -3,17 +3,13 @@ import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
 import 'package:fridge_app/widgets/product-sorted-gridview.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
   final ProductListModel _productListModel = ProductListModel();
 
   @override
   Widget build(BuildContext context) {
-    _productListModel.initialize();
-    // ignore: invalid_use_of_visible_for_testing_member
-    SharedPreferences.setMockInitialValues({});
-    
+    _productListModel.initialize();    
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -61,7 +57,7 @@ class HomePage extends StatelessWidget {
                 ),
                 FloatingActionButton(
                   child: const Icon(Icons.add),
-                  onPressed: () => _openBottomSheet(context, null, null)
+                  onPressed: () => _openBottomSheet(context, {})
                 ),
               ].map((widget) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -80,11 +76,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _openBottomSheet(BuildContext context, String? name, String? thumbnail) async {
+  void _openBottomSheet(BuildContext context, Map<String, String?> args) async {
     await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return ProductFormWidget(name: name, thumbnail: thumbnail);
+        return ProductFormWidget(product_args: args);
       },
     );
   }
@@ -92,5 +88,6 @@ class HomePage extends StatelessWidget {
   void _productScan (BuildContext context) async {
     final res = await BarcodeService().barcodeScanning();
     print("[LOG] result=$res");
+    _openBottomSheet(context, res);
   }
 }

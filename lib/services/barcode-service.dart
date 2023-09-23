@@ -27,18 +27,17 @@ class BarcodeService {
   Future<Map<String, String?>> _getProductInfosFromAPI(String barcode) async {
     final ProductQueryConfiguration configuration = ProductQueryConfiguration(
       barcode,
-      fields: [ProductField.SELECTED_IMAGE, ProductField.GENERIC_NAME, ProductField.NAME],
+      fields: [ProductField.IMAGE_FRONT_SMALL_URL, ProductField.GENERIC_NAME, ProductField.NAME],
       version: ProductQueryVersion.v3,
       country: OpenFoodAPIConfiguration.globalCountry
     );
     final ProductResultV3 result = await OpenFoodAPIClient.getProductV3(configuration);
-
-    print("[LOG] ${result.product?.selectedImages}");
     if (result.status == ProductResultV3.statusSuccess) {
       return {
+        'product_barcode' : barcode,
         'product_label' : result.product?.productName,
         'product_description' : result.product?.genericName,
-        'product_thumbnail' : ""
+        'product_thumbnail' : result.product?.imageFrontSmallUrl
       };
     } else {
       throw Exception('product not found, please insert data for $barcode');

@@ -4,11 +4,10 @@ import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/utils/utils.dart';
 
 class ProductFormWidget extends StatefulWidget {
-  const ProductFormWidget({super.key, this.name, this.thumbnail, this.product});
 
-  final String? name;
-  final String? thumbnail;
-  final Product? product;
+  const ProductFormWidget({super.key, required this.product_args});
+
+  final Map<String, String?> product_args;
   
   @override
   State<ProductFormWidget> createState() => _ProductFormWidgetState();
@@ -17,16 +16,17 @@ class ProductFormWidget extends StatefulWidget {
 class _ProductFormWidgetState extends State<ProductFormWidget> {
   
   var _selectedDate;
-  var _name;
+  
+  final TextEditingController _label_controller = TextEditingController();
 
   num _keyboardMaxHeight = 0;
 
   bool _dateSelect = false;
   @override
   void initState() {
-    print("[LOG] form initialization");
+    // print("[LOG] form initialization");
     _selectedDate = DateTime.now().add(const Duration(days: 7));
-    _name = widget.name ?? "";
+    _label_controller.text = widget.product_args['product_label'] ?? "";
     super.initState();
   }
 
@@ -47,12 +47,13 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
               Expanded(
                 flex: 5,
                 child: TextField(
+                  controller: _label_controller,
                   autofocus: true,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Product name',
                   ),
-                  onChanged: (value) => setState(() => _name = value),
+                  // onChanged: (value) => setState(() => _label = value),
                   onTap: () => setState(() => _dateSelect = false),
                 ),
               ),
@@ -82,7 +83,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton.icon(
-              onPressed: validProductInfos() ? () => handleButtonPressed() : null,
+              onPressed: _label_controller.value.text.isNotEmpty ? () => handleButtonPressed() : null,
               icon: const Icon(Icons.send),
               label: const Text("Add product")
             ),
@@ -93,18 +94,19 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   }
     
   handleButtonPressed() async {
-    await ProductListModel().add(Product(name: _name, barcode: "dummy_barcode", expiresOn: _selectedDate, quantity: 1, thumbnail: widget.thumbnail));
+    await ProductListModel().add(Product(name: _label_controller.value.text, barcode: "dummy_barcode", expiresOn: _selectedDate, quantity: 1, thumbnail: widget.product_args['product_thumbnail']));
     Navigator.of(context).pop();
-  }
-  
-  bool validProductInfos() {
-    return _name != "";
-    // && date.isAfter(DateTime.now() - )
   }
   
   focusDatePickingPanel() {
     print("[LOG] unfocus");
     FocusScope.of(context).requestFocus(FocusNode());
     setState(() => _dateSelect = true);
+  }
+
+  @override
+  void dispose() {
+    _label_controller.dispose();
+    super.dispose();
   }
 }
