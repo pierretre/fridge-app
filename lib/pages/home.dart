@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/productlist-model.dart';
+import 'package:fridge_app/pages/homeV2.dart';
 import 'package:fridge_app/services/barcode-service.dart';
 import 'package:fridge_app/widgets/product-form.dart';
 import 'package:fridge_app/widgets/product-sorted-gridview.dart';
@@ -10,6 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _productListModel.initialize();    
+    return HomePageV2();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

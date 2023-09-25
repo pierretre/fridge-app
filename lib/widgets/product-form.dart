@@ -24,8 +24,8 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   final TextEditingController _label_controller = TextEditingController();
 
   num _keyboardMaxHeight = 0;
-
   bool _dateSelect = false;
+
   @override
   void initState() {
     initProductInfoFromData(widget.product_args);
@@ -57,6 +57,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
                     hintText: 'Product name',
                   ),
                   onTap: () => setState(() => _dateSelect = false),
+                  onChanged: (value) => setState(() {}),
                 ),
               ),
               Flexible(
