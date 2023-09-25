@@ -17,7 +17,7 @@ class BarcodeService {
     OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.FRANCE;
   }
 
-  Future<String> barcodeExtract() async {
+  Future<String> _barcodeExtract() async {
     return await FlutterBarcodeScanner.scanBarcode("#ff6666", 
                                               "Cancel",
                                               false, 
@@ -45,11 +45,11 @@ class BarcodeService {
   }
 
   Future<Map<String, String?>> barcodeScanning() async {
-    String barcode = await barcodeExtract();
+    String barcode = await _barcodeExtract();
 
     // FOR TESTING PURPOSE : TODO
     if(barcode == "-1") barcode = "3017620422003";
-    
+
     return await _getProductInfosFromAPI(barcode);
   }
 }   

@@ -13,7 +13,6 @@ A Flutter project.
 - [x] [BUG] Mise à jour de la recherche de code barre avec nouvelle version de l'API
 - [ ] Affichage du nom du produit avec sa descripton, possibilité d'édition, photo
 - [ ] Implémentation de la mise à jour des infos produit
-- [ ] Sélecteur "se souvenir du produit"
 - [ ] Scanning de la date de péremption ou saisie manuelle
 - [ ] Affichage de toutes les infos avec possibilité de les modifier
 - [ ] Implémentation du tri de la liste en fonction de l'ordre des dates
@@ -24,6 +23,7 @@ A Flutter project.
   
 ## Fonctionnalités avancées
 - [ ] Mise en cache/BDD des codes barre pour recherche du nom plus rapide
+- [ ] Sélecteur "se souvenir du produit"
 - [ ] Quand on scan un produt existant ou ajout produit de même nom : Popup avec quantité et options (supprimer, ajouter plusieurs produit) si scan du même code barre (***mettre un message pour proposer d'ajouter une quantité au produit existant, sinon supprimer***)
 - [ ] Panneau de gestion des notifications pour pouvoir régler le délai ... 
 - [ ] Gestion des quantités 

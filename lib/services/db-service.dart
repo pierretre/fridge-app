@@ -25,7 +25,7 @@ class DbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL, thumbnail TEXT)',
+          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, label TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL, thumbnail TEXT)',
         );
       },
       version: _db_version,
@@ -53,10 +53,12 @@ class DbService {
     return List.generate(
       maps.length, (index) => Product(
         id: maps[index]['id'], 
-        name: maps[index]['name'].toString(), 
+        label: maps[index]['label'].toString(), 
         barcode: maps[index]['barcode'].toString(), 
         expiresOn: DateTime.parse(maps[index]['expiresOn']), 
-        quantity: maps[index]['quantity']
+        quantity: maps[index]['quantity'],
+        description: maps[index]['description'].toString(),
+        thumbnail: maps[index]['thumbnail'].toString()
       )
     );
   }

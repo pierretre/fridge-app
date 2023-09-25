@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/models/productlist-model.dart';
-import 'package:fridge_app/utils/utils.dart';
+import 'package:fridge_app/services/barcode-service.dart';
+import 'package:intl/intl.dart';
 
 class ProductFormWidget extends StatefulWidget {
 
@@ -16,6 +17,9 @@ class ProductFormWidget extends StatefulWidget {
 class _ProductFormWidgetState extends State<ProductFormWidget> {
   
   var _selectedDate;
+  var _barcode;
+  var _thumbnail;
+  var _description;
   
   final TextEditingController _label_controller = TextEditingController();
 
@@ -24,9 +28,8 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   bool _dateSelect = false;
   @override
   void initState() {
-    // print("[LOG] form initialization");
+    initProductInfoFromData(widget.product_args);
     _selectedDate = DateTime.now().add(const Duration(days: 7));
-    _label_controller.text = widget.product_args['product_label'] ?? "";
     super.initState();
   }
 
@@ -53,23 +56,26 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
                     border: InputBorder.none,
                     hintText: 'Product name',
                   ),
-                  // onChanged: (value) => setState(() => _label = value),
                   onTap: () => setState(() => _dateSelect = false),
                 ),
               ),
               Flexible(
-                child: IconButton(
+                child: IconButton.outlined(
                   icon: const Icon(Icons.barcode_reader), 
-                  onPressed: () { print("[LOG] tap barcode scan"); },
+                  onPressed: () => handleBarcodeButtonPressed(),
                 )
               )
             ],
           ),
-          Flexible(
-            child: OutlinedButton.icon(
-              onPressed: () => focusDatePickingPanel(),
-              icon: const Icon(Icons.calendar_month_outlined), 
-              label: Text(Utils.getProductLastingDays(_selectedDate).$1)) 
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Flexible(              
+              child: OutlinedButton.icon(
+                onPressed: () => focusDatePickingPanel(),
+                icon: const Icon(Icons.calendar_month_outlined), 
+                label: Text(DateFormat('MM/dd').format(_selectedDate)) 
+              )
+            )
           ),
           if(_dateSelect) Expanded(
             child: CalendarDatePicker(
@@ -83,7 +89,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton.icon(
-              onPressed: _label_controller.value.text.isNotEmpty ? () => handleButtonPressed() : null,
+              onPressed: _label_controller.value.text.isNotEmpty ? () => handleAddButtonPressed() : null,
               icon: const Icon(Icons.send),
               label: const Text("Add product")
             ),
@@ -92,14 +98,32 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
       )
     );
   }
+  
+  void initProductInfoFromData(Map<String, String?> product_args) {
+    _barcode = product_args['product_barcode'];
+    _label_controller.text = product_args['product_label'] ?? "";
+    _description = product_args['product_description'];
+    _thumbnail = product_args['product_thumbnail'];
+  }
     
-  handleButtonPressed() async {
-    await ProductListModel().add(Product(name: _label_controller.value.text, barcode: "dummy_barcode", expiresOn: _selectedDate, quantity: 1, thumbnail: widget.product_args['product_thumbnail']));
+  handleAddButtonPressed() async {
+    await ProductListModel().add(Product(
+      barcode: _barcode,
+      label: _label_controller.value.text, 
+      expiresOn: _selectedDate, 
+      quantity: 1, 
+      description: _description, 
+      thumbnail: _thumbnail
+    ));
     Navigator.of(context).pop();
   }
   
+  handleBarcodeButtonPressed() async {
+    initProductInfoFromData(await BarcodeService().barcodeScanning());
+  }
+  
   focusDatePickingPanel() {
-    print("[LOG] unfocus");
+    // print("[LOG] unfocus");
     FocusScope.of(context).requestFocus(FocusNode());
     setState(() => _dateSelect = true);
   }

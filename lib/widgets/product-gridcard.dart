@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/utils/utils.dart';
+import 'package:intl/intl.dart';
 
 class ProductGridCardWidget extends StatelessWidget {
  
@@ -13,7 +14,7 @@ class ProductGridCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final (remainingTime, _) = Utils.getProductLastingDays(product.expiresOn);
+    // final (remainingTime, _) = Utils.getProductLastingDays(product.expiresOn);
 
     return Card(      
       child: Container(
@@ -30,8 +31,8 @@ class ProductGridCardWidget extends StatelessWidget {
               Expanded(
                 flex: 7,
                 child: ListTile(
-                  title: Text(product.name),
-                  subtitle: Text(remainingTime),
+                  title: Text(product.label),
+                  subtitle: Text(DateFormat('yyyy/MM/dd').format(product.expiresOn)),
                   isThreeLine: true,
                 )
               ),

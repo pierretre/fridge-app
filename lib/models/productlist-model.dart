@@ -21,7 +21,7 @@ class ProductListModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await DbService().insert(product).then((value) async {
       if (product.barcode != null) {
-        await prefs.setString(product.barcode!, product.name);
+        await prefs.setString(product.barcode!, product.label);
       }
     });
     await refreshProducts();
