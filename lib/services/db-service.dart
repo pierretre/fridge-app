@@ -19,7 +19,6 @@ class DbService {
   Future<void> initDatabase () async {
     WidgetsFlutterBinding.ensureInitialized();
     String path = join(await getDatabasesPath(), _db_name);
-    // databaseFactory.deleteDatabase(path);
 
     _database = await openDatabase(
       path,
@@ -61,5 +60,10 @@ class DbService {
         thumbnail: maps[index]['thumbnail'].toString()
       )
     );
+  }
+
+  void dumpDatabase() async {
+    databaseFactory.deleteDatabase(join(await getDatabasesPath(), _db_name));
+    // initDatabase();
   }
 }
