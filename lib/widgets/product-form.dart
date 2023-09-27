@@ -22,13 +22,14 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
   var _description;
   
   final TextEditingController _label_controller = TextEditingController();
+  final model = ProductListModel();
 
   num _keyboardMaxHeight = 0;
   bool _dateSelect = false;
 
   @override
   void initState() {
-    initProductInfoFromData(widget.product_args);
+    _initProductInfoFromData(widget.product_args);
     _selectedDate = DateTime.now().add(const Duration(days: 7));
     super.initState();
   }
@@ -63,7 +64,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
               Flexible(
                 child: IconButton.outlined(
                   icon: const Icon(Icons.barcode_reader), 
-                  onPressed: () => handleBarcodeButtonPressed(),
+                  onPressed: () => _handleBarcodeButtonPressed(),
                 )
               )
             ],
@@ -72,7 +73,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
             alignment: Alignment.centerLeft,
             child: Flexible(              
               child: OutlinedButton.icon(
-                onPressed: () => focusDatePickingPanel(),
+                onPressed: () => _focusDatePickingPanel(),
                 icon: const Icon(Icons.calendar_month_outlined), 
                 label: Text(DateFormat('MM/dd').format(_selectedDate)) 
               )
@@ -90,7 +91,7 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton.icon(
-              onPressed: _label_controller.value.text.isNotEmpty ? () => handleAddButtonPressed() : null,
+              onPressed: _label_controller.value.text.isNotEmpty ? () => _handleAddButtonPressed() : null,
               icon: const Icon(Icons.send),
               label: const Text("Add product")
             ),
@@ -100,30 +101,38 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
     );
   }
   
-  void initProductInfoFromData(Map<String, String?> product_args) {
+  void _initProductInfoFromData(Map<String, String?> product_args) {
     _barcode = product_args['product_barcode'];
     _label_controller.text = product_args['product_label'] ?? "";
     _description = product_args['product_description'];
     _thumbnail = product_args['product_thumbnail'];
   }
     
-  handleAddButtonPressed() async {
-    await ProductListModel().add(Product(
+  void _handleAddButtonPressed() async {
+    await model.add(Product(
       barcode: _barcode,
       label: _label_controller.value.text, 
       expiresOn: _selectedDate, 
       quantity: 1, 
       description: _description, 
       thumbnail: _thumbnail
-    ));
+    )).catchError((error, stackTrace) => {
+      print("[LOG] form error product")
+    });
     Navigator.of(context).pop();
   }
   
-  handleBarcodeButtonPressed() async {
-    initProductInfoFromData(await BarcodeService().barcodeScanning());
+  _handleBarcodeButtonPressed() async {
+    final productFromBarcode = await BarcodeService().barcodeScanning();
+    final entryPresent = model.containsProduct(
+      productFromBarcode['product_barcode']??"", 
+      productFromBarcode['product_label']??""
+    );
+    print("[LOG] in the items:$entryPresent");
+    _initProductInfoFromData(productFromBarcode);
   }
   
-  focusDatePickingPanel() {
+  _focusDatePickingPanel() {
     // print("[LOG] unfocus");
     FocusScope.of(context).requestFocus(FocusNode());
     setState(() => _dateSelect = true);

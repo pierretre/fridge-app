@@ -33,6 +33,22 @@ class DbService {
 
   Future<int> insert(Product product) async {
     await initDatabase();
+    // check product is not already in database :
+    final res = await _database.rawQuery(
+      "SELECT * "
+      "FROM products "
+      "WHERE barcode = '${product.barcode}' "
+      "UNION "
+      "SELECT * "
+      "FROM products "
+      "WHERE label = '${product.label}'"
+    );
+
+    if(res.isNotEmpty){
+      return Future.error('error');
+    }
+    
+    // if all good add to database :
     return await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -62,8 +78,7 @@ class DbService {
     );
   }
 
-  void dumpDatabase() async {
+  static dumpDatabase() async {
     databaseFactory.deleteDatabase(join(await getDatabasesPath(), _db_name));
-    // initDatabase();
   }
 }

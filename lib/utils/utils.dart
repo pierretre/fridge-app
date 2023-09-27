@@ -8,25 +8,16 @@ class Utils {
   static final List<String> _PRIORITY_LABELS = ["Expired", "Tomorrow", "Next days", "Next weeks", "Next months"];
   static final List<Color> _PRIORITY_COLORS = [Colors.red, Colors.orange, Colors.yellow, Colors.lightGreen, Colors.green];
   
-  static (String, Color) getProductLastingDays (DateTime dt) {
-    DateTime now = DateTime.now();
-    final difference = dt.difference(DateTime(now.year, now.month, now.day)).inDays;
-
-    if(difference < 0) return ("Expired", Colors.white);
-    if(difference == 0) return ("Today", Colors.white);
-    final weeks = (difference - difference % 7) ~/ 7;
-    if(difference >= 7) return ("$weeks week${weeks == 1 ? '' : 's'}", Colors.white);
-    return ("$difference day${(difference % 7) == 1 ? '' : 's'}", Colors.white);
-  }
-
+  /*
+   * returns prority associated to DateTime as int 
+   */
   static int _getPriority (DateTime dt) {
     DateTime now = DateTime.now();
     final difference = dt.difference(DateTime(now.year, now.month, now.day)).inDays;
-
     if(difference < 0) return 0;
-    if(difference == 0) return 1;
+    if(difference <= 1) return 1;
     if(difference < 7) return 2;
-    if(difference <= 31) return 3;
+    if(difference < 31) return 3;
     return 4;
   }
 
@@ -47,7 +38,7 @@ class Utils {
     return _PRIORITY_LABELS[priority];
   }
 
-  static getPriorityColor(int priority) {
+  static Color getPriorityColor(int priority) {
     return _PRIORITY_COLORS[priority].withOpacity(.8);
   }
 }

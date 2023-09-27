@@ -12,29 +12,27 @@ class AppDrawer extends StatelessWidget {
         children: [
           ListTile(
             title: const Text('delete database'),
-            onTap: () {
-              showDialog(
-                context: context, 
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Delete data'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('OK'),
-                        onPressed: () {
-                          DbService().dumpDatabase();
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('CANCEL'),
-                        onPressed: () => Navigator.of(context).pop()
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
+            onTap: () => showDialog(
+              context: context, 
+              builder: (BuildContext context) {
+                return AlertDialog.adaptive(
+                  title: const Text('Delete data'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        DbService.dumpDatabase();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('CANCEL'),
+                      onPressed: () => Navigator.of(context).pop()
+                    ),
+                  ],
+                );
+              },
+            )
           )
         ],
       )

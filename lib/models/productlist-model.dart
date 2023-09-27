@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/services/db-service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductListModel extends ChangeNotifier {
   
@@ -18,30 +17,31 @@ class ProductListModel extends ChangeNotifier {
   }
 
   Future<void> add(Product product) async {
-    final prefs = await SharedPreferences.getInstance();
     await DbService().insert(product).then((value) async {
-      if (product.barcode != null) {
-        await prefs.setString(product.barcode!, product.label);
-      }
+      await refreshProducts();
     });
-    await refreshProducts();
   }
   
   void remove(Product product) async {
-    final result = await DbService().delete(product);
-    print("[LOG] delete => $result");
-    await refreshProducts();
+    await DbService().delete(product).then((value) async {
+      await refreshProducts();
+      print("[LOG] delete => $value");
+    });
   }
 
   void update(String name, Product product) async {
-    final result = await DbService().update(product);
-    print("[LOG] update => $result");
-    await refreshProducts();
+    await DbService().update(product).then((value) async {
+      await refreshProducts();
+      print("[LOG] update => $value");
+    });
   }
   
   refreshProducts() async {
     _products = await DbService().queryAll();  
-    // print("[LOG] _products refreshed $_products");
     notifyListeners();
+  }
+
+  Product? containsProduct(String barcode, String label) {
+    return _products.firstWhere((item) => item.barcode == barcode || item.label == label);
   }
 }

@@ -11,9 +11,9 @@ A Flutter project.
 - [x] Scanning de codes barres avec un simple bouton
 - [x] Recherche du code barre grâce à un appel API pour récupérer les infos de base du produit 
 - [x] [BUG] Mise à jour de la recherche de code barre avec nouvelle version de l'API
+- [ ] [BUG] Ajout gestion de connexion à internet pour les requêtes de codes barre
 - [ ] Affichage du nom du produit avec sa descripton, possibilité d'édition, photo
 - [ ] Implémentation de la mise à jour des infos produit
-- [ ] Scanning de la date de péremption ou saisie manuelle
 - [ ] Affichage de toutes les infos avec possibilité de les modifier
 - [ ] Implémentation du tri de la liste en fonction de l'ordre des dates
 - [ ] Implémentation d'un système de notification quand un produit se rapproche de sa date limite
@@ -25,6 +25,7 @@ A Flutter project.
 - [ ] Mise en cache/BDD des codes barre pour recherche du nom plus rapide
 - [ ] Sélecteur "se souvenir du produit"
 - [ ] Quand on scan un produt existant ou ajout produit de même nom : Popup avec quantité et options (supprimer, ajouter plusieurs produit) si scan du même code barre (***mettre un message pour proposer d'ajouter une quantité au produit existant, sinon supprimer***)
+- [ ] Scanning de la date de péremption OCR
 - [ ] Panneau de gestion des notifications pour pouvoir régler le délai ... 
 - [ ] Gestion des quantités 
 - [ ] Implémenter l'édition et la suppression des produits avec swipe droit/gauche de la card 
