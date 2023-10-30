@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/productlist-model.dart';
 import 'package:provider/provider.dart';
-import 'pages/home.dart';
+import 'pages/homepage.dart';
 
 void main() {
   runApp(
