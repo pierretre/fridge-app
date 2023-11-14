@@ -1,10 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/models/productlist-model.dart';
 import 'package:fridge_app/services/barcode-service.dart';
-import 'package:intl/intl.dart';
 
 class FormPage extends StatefulWidget {
   const FormPage({super.key, required this.product_args});
@@ -22,7 +20,6 @@ class _FormPageState extends State<FormPage> {
   var _thumbnail;
   var _description;
 
-  var _dateEditMode = false;
   final TextEditingController _label_controller = TextEditingController();
   final model = ProductListModel();
 
@@ -36,9 +33,40 @@ class _FormPageState extends State<FormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: IntrinsicHeight(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row( 
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90)
+                    ),
+                  ),
+                  child: const Text("Cancel")
+                ),
+              ),
+              Expanded(
+                child: TextButton(
+                  onPressed: _label_controller.value.text.isNotEmpty ? () => _handleAddButtonPressed() : null,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90)
+                    ),
+                  ),
+                  child: const Text("Add item")
+                ),
+              ),
+            ]
+          )
+        )
+      ),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
         child: Wrap(
           runSpacing: 10,
           children: [
@@ -54,9 +82,8 @@ class _FormPageState extends State<FormPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(90)
                       ),
-                      hintText: "Add Item"
+                      hintText: "product label"
                     ),
-                    onTap: () => setState(() => _dateEditMode = false),
                     onChanged: (value) => setState(() {}),
                   )
                 ),
@@ -69,30 +96,14 @@ class _FormPageState extends State<FormPage> {
                 ),
               ]
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: OutlinedButton.icon(
-                onPressed: () => _focusDatePickingPanel(),
-                icon: const Icon(Icons.calendar_month_outlined), 
-                label: Text(DateFormat('MM/dd').format(_selectedDate)) 
-              )
-            ),
-            if(_dateEditMode) Expanded(
+            Container(
               child: CalendarDatePicker(
                 initialDate: _selectedDate, 
                 firstDate: DateTime.now(), 
                 lastDate: DateTime(2050), 
                 onDateChanged: (value) => setState(() => _selectedDate = value)
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton.icon(
-                onPressed: _label_controller.value.text.isNotEmpty ? () => _handleAddButtonPressed() : null,
-                icon: const Icon(Icons.send),
-                label: const Text("Add product")
-              ),
-            ), 
+              )
+            )
           ]
         )
       ),
@@ -111,28 +122,42 @@ class _FormPageState extends State<FormPage> {
   }
 
   void _handleAddButtonPressed() async {
+    log(_label_controller.value.text);
     await model.add(Product(
       barcode: _barcode,
       label: _label_controller.value.text, 
+      addedOn: DateTime.now(), 
       expiresOn: _selectedDate, 
       quantity: 1, 
       description: _description, 
       thumbnail: _thumbnail
-    )).catchError((error, stackTrace) => {
-      log("[LOG] form error product")
-    });
+    )).catchError((error, stackTrace) => _handleProductAddError(context, error));
     Navigator.of(context).pop();
 
   }
 
+  /*
+   * In case the product canot be added to the database :  
+   */
+  _handleProductAddError(BuildContext context, String? error) {
+    final message = error == null ? "Undefined error." : "Couldn't add the product, an item with the same $error already exist";
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message)      
+    ));
+  }
+  
   _handleBarcodeButtonPressed() async {
-    final productFromBarcode = await BarcodeService().barcodeScanning();
-
-    _initProductInfoFromData(productFromBarcode);
+    BarcodeService().barcodeScanning()
+    .then((value) => _initProductInfoFromData(value))
+    .onError((error, stackTrace) => _handleProductScanError(context));  
   }
 
-  _focusDatePickingPanel() {
-    FocusScope.of(context).requestFocus(FocusNode());
-    setState(() => _dateEditMode = true);  
+  /*
+   * In case the app can't recover product informations from the api :  
+   */
+  _handleProductScanError(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Couldn't retrieve product informations, please unsure you have access to the internet"),        
+    ));
   }
 }

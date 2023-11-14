@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:developer';
 
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -34,23 +33,23 @@ class BarcodeService {
       version: ProductQueryVersion.v3,
       country: OpenFoodAPIConfiguration.globalCountry
     );
-
-      log("before get");
-      await OpenFoodAPIClient.getProductV3(configuration)
-      .then((result) {
-        log("RESULT = $result");
-        if (result.status == ProductResultV3.statusSuccess) {
-          return {
-            'product_barcode' : barcode,
-            'product_label' : result.product?.productName,
-            'product_description' : result.product?.genericName,
-            'product_thumbnail' : result.product?.imageFrontSmallUrl
-          };
-        } else {
-          return Future.error(Exception('product not found, please insert data for $barcode'));
-        }
-      },).catchError((error) => log("error raised"));
-    return {};
+    log("before get");
+    try {
+      ProductResultV3 result = await OpenFoodAPIClient.getProductV3(configuration);
+      log("RESULT = $result");
+      if (result.status == ProductResultV3.statusSuccess) {
+        return {
+          'product_barcode' : barcode,
+          'product_label' : result.product?.productName,
+          'product_description' : result.product?.genericName,
+          'product_thumbnail' : result.product?.imageFrontSmallUrl
+        };
+      } else {
+        return Future.error(Exception('product not found, please insert data for $barcode'));
+      }
+    } on Exception catch (_) {
+      rethrow;
+    } 
   }
 
   /*
@@ -68,8 +67,8 @@ class BarcodeService {
 
     try {
       return _getProductInfosFromAPI(barcode);
-    } on SocketException {
-      return Future.error(SocketException);
+    } on Exception {
+      rethrow;
     }
   }
   

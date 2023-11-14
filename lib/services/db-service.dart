@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fridge_app/models/product.dart';
 import 'package:path/path.dart';
 import 'package:flutter/widgets.dart';
@@ -24,7 +26,7 @@ class DbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, label TEXT NOT NULL, barcode TEXT, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL, description TEXT, thumbnail TEXT)',
+          'CREATE TABLE products(id INTEGER PRIMARY KEY NOT NULL, label TEXT NOT NULL, barcode TEXT, addedOn DATE NOT NULL, expiresOn DATE NOT NULL, quantity INTEGER NOT NULL, description TEXT, thumbnail TEXT)',
         );
       },
       version: _db_version,
@@ -34,20 +36,12 @@ class DbService {
   Future<int> insert(Product product) async {
     await initDatabase();
     // check product is not already in database :
-    final res = await _database.rawQuery(
-      "SELECT * "
-      "FROM products "
-      "WHERE barcode = '${product.barcode}' "
-      "UNION "
-      "SELECT * "
-      "FROM products "
-      "WHERE label = '${product.label}'"
-    );
+    final query_barcode = "SELECT * FROM products WHERE barcode = '${product.barcode}'";
+    if((await _database.rawQuery(query_barcode)).isNotEmpty) return Future.error("barcode");
 
-    if(res.isNotEmpty){
-      return Future.error('error');
-    }
-    
+    final query_label = "SELECT * FROM products WHERE barcode = '${product.label}'";
+    if((await _database.rawQuery(query_label)).isNotEmpty) return Future.error("label");
+
     // if all good add to database :
     return await _database.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
@@ -70,6 +64,7 @@ class DbService {
         id: maps[index]['id'], 
         label: maps[index]['label'].toString(), 
         barcode: maps[index]['barcode'].toString(), 
+        addedOn: DateTime.parse(maps[index]['expiresOn']), 
         expiresOn: DateTime.parse(maps[index]['expiresOn']), 
         quantity: maps[index]['quantity'],
         description: maps[index]['description'].toString(),

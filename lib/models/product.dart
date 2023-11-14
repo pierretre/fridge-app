@@ -5,6 +5,7 @@ class Product {
   final int? id;
   String label;
   String? barcode;
+  DateTime addedOn;
   DateTime expiresOn;
   int quantity;
   String? description;
@@ -15,6 +16,7 @@ class Product {
     required this.label,
     this.barcode,
     required this.expiresOn,
+    required this.addedOn,
     required this.quantity,
     this.description,
     this.thumbnail
@@ -25,6 +27,7 @@ class Product {
       'id': id,
       'label': label,
       'barcode': barcode,
+      'addedOn': DateFormat('yyyy-MM-dd').format(addedOn),
       'expiresOn': DateFormat('yyyy-MM-dd').format(expiresOn),
       'quantity': quantity,
       'description': description,
