@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/productlist-model.dart';
+import 'package:fridge_app/services/local-notifications-service.dart';
 import 'package:provider/provider.dart';
 import 'pages/homepage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  LocalNotificationsService.initialize();
+  log("main");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ProductListModel(),

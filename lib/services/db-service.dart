@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:fridge_app/models/product.dart';
 import 'package:path/path.dart';
 import 'package:flutter/widgets.dart';

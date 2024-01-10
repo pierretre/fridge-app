@@ -14,9 +14,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    _productListModel.initialize();    
-
+    _productListModel.initialize();
     return Scaffold(
       appBar: _buildAppBar() ,    
       drawer: const AppDrawer(),        
@@ -73,12 +71,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-
-
   void _openProductForm(BuildContext context, Map<String, String?> args) async {
     Navigator.of(context).push(_createRoute(args));
   }
   
+  /**
+   * Called when user clicks the scan button
+   */
   void _productScan (BuildContext context) async {
     BarcodeService().barcodeScanning()
     .then((value) => _handleProductScanSuccess(context, value))

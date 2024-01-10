@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fridge_app/models/product.dart';
 import 'package:fridge_app/services/db-service.dart';
+import 'package:fridge_app/services/local-notifications-service.dart';
 
 class ProductListModel extends ChangeNotifier {
   
@@ -12,32 +14,30 @@ class ProductListModel extends ChangeNotifier {
 
   ProductListModel._internal();
 
-  void initialize() {
-    refreshProducts();
+  void initialize() async {
+    await refreshProducts();
   }
 
   Future<void> add(Product product) async {
-    await DbService().insert(product).then((value) async {
-      await refreshProducts();
-    });
+    await DbService().insert(product).then((value) => refreshProducts());
   }
   
   void remove(Product product) async {
     await DbService().delete(product).then((value) async {
       await refreshProducts();
-      print("[LOG] delete => $value");
+      log("[delete => $value");
     });
   }
 
   void update(String name, Product product) async {
     await DbService().update(product).then((value) async {
       await refreshProducts();
-      print("[LOG] update => $value");
     });
   }
   
   refreshProducts() async {
-    _products = await DbService().queryAll();  
+    _products = await DbService().queryAll(); 
+    LocalNotificationsService().scheduleNotificationBasedOnProducts(_products);
     notifyListeners();
   }
 

@@ -111,14 +111,16 @@ class _FormPageState extends State<FormPage> {
   }
   
   /*
-   *  
+   * Fills the form inputs with values passed as parameters
    */
   void _initProductInfoFromData(Map<String, String?> product_args) {
     log(product_args.toString());
-    _barcode = product_args['product_barcode'];
-    _label_controller.text = product_args['product_label'] ?? "";
-    _description = product_args['product_description'];
-    _thumbnail = product_args['product_thumbnail'];
+    setState(() {
+      _barcode = product_args['product_barcode'];
+      _label_controller.text = product_args['product_label'] ?? "";
+      _description = product_args['product_description'];
+      _thumbnail = product_args['product_thumbnail'];
+    });
   }
 
   void _handleAddButtonPressed() async {
@@ -133,7 +135,6 @@ class _FormPageState extends State<FormPage> {
       thumbnail: _thumbnail
     )).catchError((error, stackTrace) => _handleProductAddError(context, error));
     Navigator.of(context).pop();
-
   }
 
   /*
